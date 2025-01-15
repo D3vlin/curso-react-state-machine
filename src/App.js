@@ -1,4 +1,4 @@
-import { BaseLayout } from "./Components/BaseLayout";
+import { BaseLayout } from "./Containers/BaseLayout";
 
 function App() {
   return (

@@ -11,7 +11,7 @@ const bookingMachine = createMachine({
         },
         search: {
             on: {
-                CONTINUE: 'passangers',
+                CONTINUE: 'passengers',
                 CANCEL: 'initial'
             }
         },
@@ -20,7 +20,7 @@ const bookingMachine = createMachine({
                 FINISH: 'initial'
             }
         },
-        passangers: {
+        passengers: {
             on: {
                 DONE: 'tickets',
                 CANCEL: 'initial'
