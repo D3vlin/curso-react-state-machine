@@ -29,53 +29,63 @@ const fillCountries = {
     }
 }
 
-const bookingMachine = createMachine({
-    id: "buy plane tickes",
-    initial: 'initial',
-    context: {
-        passengers: [],
-        selectedCountry: '',
-        countries: [],
-        error: ''
-    },
-    states: {
-        initial: {
-            entry: assign({ passengers: [], selectedCountry: '' }),
-            on: {
-                START: 'search'
-            }
+const bookingMachine = createMachine(
+    {
+        id: "buy plane tickes",
+        initial: 'initial',
+        context: {
+            passengers: [],
+            selectedCountry: '',
+            countries: [],
+            error: ''
         },
-        search: {
-            on: {
-                CONTINUE: {
-                    target: 'passengers',
-                    actions: assign({ selectedCountry: ({ event }) => event.selectedCountry })
-                },
-                CANCEL: 'initial'
-            },
-            ...fillCountries
-        },
-        tickets: {
-            after: {
-                3000: {
-                    target: 'initial'
+        states: {
+            initial: {
+                entry: assign({ passengers: [], selectedCountry: '' }),
+                on: {
+                    START: 'search'
                 }
             },
-            on: {
-                FINISH: 'initial'
-            }
-        },
-        passengers: {
-            on: {
-                DONE: 'tickets',
-                CANCEL: 'initial',
-                ADD: {
-                    target: 'passengers',
-                    actions: assign(({ context, event }) => ({ passengers: [...context.passengers, event.newPassengers] }))
+            search: {
+                on: {
+                    CONTINUE: {
+                        target: 'passengers',
+                        actions: assign({ selectedCountry: ({ event }) => event.selectedCountry })
+                    },
+                    CANCEL: 'initial'
+                },
+                ...fillCountries
+            },
+            tickets: {
+                after: {
+                    3000: {
+                        target: 'initial'
+                    }
+                },
+                on: {
+                    FINISH: 'initial'
+                }
+            },
+            passengers: {
+                on: {
+                    DONE: {
+                        target: 'tickets',
+                        guard: 'moreThanOnePassenger'
+                    },
+                    CANCEL: 'initial',
+                    ADD: {
+                        target: 'passengers',
+                        actions: assign(({ context, event }) => ({ passengers: [...context.passengers, event.newPassengers] }))
+                    }
                 }
             }
         }
+    },
+    {
+        guards: {
+            moreThanOnePassenger: ({context}) => (context.passengers.length > 0)
+        }
     }
-})
+)
 
 export { bookingMachine }
