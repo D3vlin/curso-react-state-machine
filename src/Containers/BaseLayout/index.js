@@ -8,7 +8,7 @@ import './styles.css';
 const BaseLayout = () => {
   const [state, send] = useMachine(bookingMachine);
 
-  console.log('nuestra maquina', state.value);
+  console.log('State: ', state.value, ', Context: ', state.context);
 
   return (
     <div className='BaseLayout'>
