@@ -1,5 +1,25 @@
 import { assign, createMachine } from "xstate";
 
+const fillCountries = {
+    initial: 'loading',
+    states: {
+        loading: {
+            on: {
+                DONE: 'success',
+                ERROR: 'failure'
+            }
+        },
+        success: {},
+        failure: {
+            on: {
+                RETRY: {
+                    target: 'loading'
+                }
+            }
+        }
+    }
+}
+
 const bookingMachine = createMachine({
     id: "buy plane tickes",
     initial: 'initial',
@@ -21,7 +41,8 @@ const bookingMachine = createMachine({
                     actions: assign({ selectedCountry: ({ event }) => event.selectedCountry })
                 },
                 CANCEL: 'initial'
-            }
+            },
+            ...fillCountries
         },
         tickets: {
             on: {
